@@ -30,10 +30,10 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 
 ## Step-by-Step Instructions
 
-1. Download or `git clone` [this repository](https://github.com/wandersick/autohotkey-silent-setup) to a desired directory e.g. `c:\autohotkey-silent-setup`
+1. Download or `git clone` [this repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
 
     ```c
-    C:\autohotkey-silent-setup
+    C:\az-autohotkey-silent-setup
     │   AeroZoom_Unattended_Installer.ahk      // AutoHotkey source code of the outer unattended installer to be customized
     │   AeroZoom_Unattended_Installer.ahk.ini  // optional: for use with an alternative compiler, Compile_AHK II, discussed later
     │   ...
@@ -68,7 +68,7 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 6. Put the SFX file there and rename it as `AeroZoom_7-Zip_SFX.exe`
 
     ```c
-    C:\autohotkey-silent-setup
+    C:\az-autohotkey-silent-setup
     |   AeroZoom_7-Zip_SFX.exe                  // place SFX (containing C:\AeroZoom) built using 7-Zip here
     │   AeroZoom_Unattended_Installer.ahk
     │   AeroZoom_Unattended_Installer.ahk.ini
@@ -79,7 +79,7 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 7. Place an icon named `AeroZoom_Setup.ico` there (optional)
 
     ```c
-    C:\autohotkey-silent-setup
+    C:\az-autohotkey-silent-setup
     |   AeroZoom_7-Zip_SFX.exe
     │   AeroZoom_Setup.ico                      // icon is optional
     │   AeroZoom_Unattended_Installer.ahk
@@ -88,12 +88,12 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
     |   ...
     ```
 
-8. Edit `AeroZoom_Unattended_Installer.ahk` and change below `C:\autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe` to a desired location (no change if directory is the same as the example)
+8. Edit `AeroZoom_Unattended_Installer.ahk` and change below `C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe` to a desired location (no change if directory is the same as the example)
 
     ```ahk
     ; Package an application (e.g. AeroZoom) in 7-Zip SFX, self-extracting archive (FYI: the AeroZoom download already comes with an SFX)
-    ; Place it in the location specified below, e.g. C:\autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe
-    FileInstall, C:\autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe, 1
+    ; Place it in the location specified below, e.g. C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe
+    FileInstall, C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe, 1
 
     ; Silently extract AeroZoom from the SFX file into the current directory
     RunWait, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe -o"%A_ScriptDir%" -y
@@ -119,10 +119,10 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 
 Thanks to this [Chocolatey how-to article by Coffmans](https://medium.com/@coffmans/my-own-chocolatey-package-for-dessert-f7721b7fe234), I was able to figure out how to push the outer unattended installer to the [Chocolatey community repository here](https://chocolatey.org/packages/aerozoom). For details, please refer to that article.
 
-The Chocolatey-related files customized for AeroZoom have been included in the [git repository](https://github.com/wandersick/autohotkey-silent-setup) downloaded in step #1, in case they are of any interest:
+The Chocolatey-related files customized for AeroZoom have been included in the [git repository](https://github.com/wandersick/az-autohotkey-silent-setup) downloaded in step #1, in case they are of any interest:
 
 ```powershell
-C:\autohotkey-silent-setup\Chocolatey\AeroZoom
+C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
 │   aerozoom.nuspec                 # package metadata
 │   ReadMe.md
 │   _TODO.txt
@@ -178,10 +178,10 @@ The remaining steps for building the Setup.exe would be:
 
 1. Acquire the source code of `Setup.exe`, i.e. `Setup.ahk`:
 
-   - Download or `git clone` [this repository](https://github.com/wandersick/autohotkey-silent-setup) to a desired directory e.g. `c:\autohotkey-silent-setup`
+   - Download or `git clone` [this repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
 
     ```c
-    C:\autohotkey-silent-setup
+    C:\az-autohotkey-silent-setup
     │   Setup.ahk // source code of Setup.exe of AeroZoom
     |   ...
     ```
