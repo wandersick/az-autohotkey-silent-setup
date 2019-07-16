@@ -202,7 +202,7 @@ Instead of using a popular approach such as Windows Installer, AeroZoom implemen
 - `/programfiles` for installing into `C:\Program Files (x86)` (or `C:\Program Files` for 32-bit OS) instead of current user profile
 - `/unattendAZ=1` for an unattended installation
 
-If it detects AeroZoom is already installed, the setup will performs an uninstallation instead
+If it detects AeroZoom is already installed, the setup will perform an uninstallation instead
 
 - If `/unattendAZ=2` or any other values, an uninstallation dialog box will also be prompted
 
@@ -254,9 +254,5 @@ Regarding uninstallation, it is simply the above process in reverse, i.e. deleti
 That's it.
 
 For simplicity, only the essential parts of `Setup.exe` are described above. Things that are specific to AeroZoom (e.g. removing scheduled tasks that AeroZoom may have created if specified by user) are not mentioned. For the rest, please refer to the comments in the source code file `Setup.ahk`.
-
-Currently, there is a known issue with the `Setup.exe` to beware:
-
-- `Setup.exe` remains in the destination directory after uninstallation and would have to be manually deleted by the user
 
 Feel free to [leave a comment](https://wandersick.blogspot.com/2019/07/how-to-create-silent-installer-with.html) if there are any questions, or if you have any suggestions as well. Have a nice day!

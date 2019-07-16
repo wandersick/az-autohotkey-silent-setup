@@ -1,9 +1,30 @@
 ; (c) Copyright 2009-2019 AeroZoom by wandersick | https://wandersick.blogspot.com
 
+; Return Codes:
+;
+; 0: Successful [un]installation
+; 1: User cancelled
+; 2: Installation failed
+; 3: AeroZoom is running and cannot be terminated. Uninstallation cancelled
+; 4: Component check failed
+; 5: Show help message
+
+; Parameters:
+;
+; /programfiles
+;     for installing into `C:\Program Files (x86)` (or `C:\Program Files` for 32-bit OS) instead of current user profile
+;
+; /unattendAZ=1
+;     for an unattended installation
+;     If it detects AeroZoom is already installed, the setup will perform an uninstallation instead
+;
+; /unattendAZ=2 or any other values
+;     an uninstallation dialog box will also be prompted
+
 #SingleInstance Force
 #NoTrayIcon
 
-verAZ = 4.0
+verAZ = 5.0
 	
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
@@ -11,7 +32,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 IfNotExist, %A_WorkingDir%\Data
 {
 	Msgbox, 262192, AeroZoom, Missing essential components.`n`nPlease download the legitimate version from wandersick.blogspot.com.
-	ExitApp
+	ExitApp, 4
 }
 
 targetDir=%localappdata%
@@ -31,7 +52,7 @@ If %1% {
 		Else
 		{
 			Msgbox, 262192, AeroZoom Setup, Supported parameters:`n`n - Unattended setup : /unattendAZ=1`n - Install for all users : /programfiles`n`nFor example: Setup.exe /programfiles /unattendaz=1`n`nNote:`n - If setup finds a copy in the target location, uninstallation will be carried out instead.`n - If you install into Program Files folder, be sure you're running it with administrator rights.
-			ExitApp
+			ExitApp, 5
 		}
 	}
 }
@@ -42,8 +63,6 @@ IfExist, %A_WorkingDir%\AeroZoom_Task.bat
 IfExist, %A_WorkingDir%\Data\AeroZoom_Task.bat
 	TaskPath=%A_WorkingDir%\Data
 
-IfWinExist, ahk_class AutoHotkeyGUI, AeroZoom ; Check if a portable copy is running
-	ExistAZ=1
 ; Install / Uninstall
 regKey=SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\AeroZoom
 IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
@@ -53,9 +72,10 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 		MsgBox, 262180, AeroZoom Installer , Install AeroZoom in the following location?`n`n%targetDir%\wandersick\AeroZoom`n`nNote:`n - For portable use, just run AeroZoom.exe. Setup is unneeded.`n - To install silently or to all users, run Setup.exe /? to see how.`n - To remove a copy that was installed to all users, run Setup.exe /programfiles
 		IfMsgBox No
 		{
-			Exitapp
+			ExitApp, 1
 		}
 	}
+	; Terminate running AeroZoom executables
 	Gosub, KillProcess
 	; Remove existing directory
 	FileRemoveDir, %targetDir%\wandersick\AeroZoom\Data, 1
@@ -146,7 +166,7 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	} else {
 		IfEqual, unattendAZ, 1
 		{
-			ExitApp, 1
+			ExitApp, 2
 		}
 		Msgbox, 262192, AeroZoom, Installation failed.`n`nPlease ensure this folder is accessible:`n`n%targetDir%\wandersick\AeroZoom
 	}
@@ -158,18 +178,81 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 		MsgBox, 262180, AeroZoom Uninstaller , Uninstall AeroZoom and delete its perferences from the following location?`n`n%targetDir%\wandersick\AeroZoom
 		IfMsgBox No
 		{
-			Exitapp
+			ExitApp, 1
 		}
 	}
+	; Terminate running AeroZoom executables
 	Gosub, KillProcess
-	; begin uninstalling
-	; remove startup shortcuts
+	Process, Exist, AeroZoom_Alt.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_Alt_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_Ctrl.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_Ctrl_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseL.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseL_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseM.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseM_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseR.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseR_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseX1.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseX1_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseX2.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_MouseX2_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_Shift.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_Shift_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_Win.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	Process, Exist, AeroZoom_Win_x64.exe ; Check if a copy is running
+	if errorlevel
+		ExistAZ=1
+	If (ExistAZ=1)
+	{
+		IfNotEqual, unattendAZ, 1
+		{
+			Msgbox, 262208, AeroZoom is currently running, Please exit AeroZoom before uninstall
+		}
+		ExitApp, 3
+	}
+	; Begin uninstalling
+	; Remove startup shortcuts
 	IfExist, %A_Startup%\*AeroZoom*.*
 	{
 		FileSetAttrib, -R, %A_Startup%\*AeroZoom*.*
 		FileDelete, %A_Startup%\*AeroZoom*.*
 	}
-	if A_IsAdmin ; unnecessary as stated above
+	if A_IsAdmin ; Unnecessary as stated above
 	{
 		IfExist, %A_StartupCommon%\*AeroZoom*.*
 		{
@@ -177,7 +260,7 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 			FileDelete, %A_StartupCommon%\*AeroZoom*.*
 		}
 	}
-	; remove task
+	; Remove task
 	if A_IsAdmin
 	{
 		RunWait, "%TaskPath%\AeroZoom_Task.bat" /deltask,"%A_WorkingDir%\",min
@@ -209,30 +292,16 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	FileSetAttrib, -R, %targetDir%\wandersick\AeroZoom\*.*
 	FileRemoveDir, %targetDir%\wandersick\AeroZoom\Data, 1
 	FileRemoveDir, %targetDir%\wandersick\AeroZoom, 1
-	FileCreateDir, %targetDir%\wandersick\AeroZoom\Data
 
-	IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe ; i.e. if the removal was successful
+	IfNotEqual, unattendAZ, 1
 	{
-		IfEqual, unattendAZ, 1
-		{
-			ExitApp, 0
-		}
-		if ExistAZ
-		{
-			Msgbox, 262208, AeroZoom, Successfully uninstalled.`n`nPlease exit or restart AeroZoom manually for completion. ; to alert users of weird behaviours if still using AeroZoom
-		} else {
-			Msgbox, 262144, AeroZoom, Successfully uninstalled.
-		}
-	} else {
-		IfEqual, unattendAZ, 1
-		{
-			ExitApp, 1
-		}
-		Msgbox, 262192, AeroZoom, Uninstalled partially.`n`nPlease remove this folder manually:`n`n%targetDir%\wandersick\AeroZoom
+		Msgbox, 262144, AeroZoom, Successfully uninstalled`n`nSetup will now delete itself in 3 seconds,3
 	}
+	; Remove directory content including Setup.exe that is currently running after 3 seconds using ping in a minimized Command Prompt
+	Run, cmd /c start /min ping 127.0.0.1 -n 3 >nul & rd /s /q "%targetDir%\wandersick"
 }
 
-ExitApp
+ExitApp, 0
 return
 
 KillProcess: ; may not work for RunAsInvoker for Administrators accounts with UAC on. RunAsHighest will solve that, while letting Standard user accounts install to the correct profile.
@@ -250,6 +319,19 @@ Process, Close, AeroZoom_MouseX1.exe
 Process, Close, AeroZoom_MouseX2.exe
 Process, Close, AeroZoom_Shift.exe
 Process, Close, AeroZoom_Win.exe
+Process, Close, AeroZoom_Alt_x64.exe
+Process, Close, AeroZoom_Ctrl_x64.exe
+Process, Close, AeroZoom_MouseL_x64.exe
+Process, Close, AeroZoom_MouseM_x64.exe
+Process, Close, AeroZoom_MouseR_x64.exe
+Process, Close, AeroZoom_MouseX1_x64.exe
+Process, Close, AeroZoom_MouseX2_x64.exe
+Process, Close, AeroZoom_Shift_x64.exe
+Process, Close, AeroZoom_Win_x64.exe
 Process, Close, ZoomPad.exe
+Process, Close, SmartClickDisabler_MouseL.exe
+Process, Close, SmartClickDisabler_MouseR.exe
+Process, Close, SmartClickDisabler_MouseX1.exe
+Process, Close, SmartClickDisabler_MouseX2.exe
 return
 
