@@ -251,8 +251,15 @@ Other information it writes there are:
 
 Regarding uninstallation, it is simply the above process in reverse, i.e. deleting shortcuts and removing the registry entries.
 
+One thing worth mentioning is previous version of AeroZoom installer (`v4.0` and before) would leave `Setup.exe` under the installation directory. Since `v5.0`, this has been solved by calling a minimized `cmd.exe /c` to `ping localhost` followed by the self-destruction, in order for `Setup.exe` to delete itself.
+
+```ahk
+; Remove directory content including Setup.exe that is currently running after 3 seconds using ping in a minimized Command Prompt
+Run, cmd /c start /min ping 127.0.0.1 -n 3 >nul & rd /s /q "%targetDir%\wandersick"
+```
+
 That's it.
 
-For simplicity, only the essential parts of `Setup.exe` are described above. Things that are specific to AeroZoom (e.g. removing scheduled tasks that AeroZoom may have created if specified by user) are not mentioned. For the rest, please refer to the comments in the source code file `Setup.ahk`.
+For simplicity, only the essential parts of `Setup.exe` are described above. Things that are specific to AeroZoom (e.g. removing scheduled tasks that AeroZoom may have created if specified by user) are not mentioned. For the rest, please refer to the comments in the [source code file](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk) `Setup.ahk` and the comments inside.
 
 Feel free to [leave a comment](https://wandersick.blogspot.com/2019/07/how-to-create-silent-installer-with.html) if there are any questions, or if you have any suggestions as well. Have a nice day!
