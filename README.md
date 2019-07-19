@@ -146,6 +146,8 @@ choco install aerozoom.4.0.0.7.nupkg  # install aerozoom.4.0.0.7.nupkg by runnin
 choco uninstall aerozoom              # uninstall aerozoom by running
                                       # - chocolateybeforemodify.ps1
                                       # - chocolateyuninstall.ps1
+
+choco push aerozoom.4.0.0.7.nupkg     # push to community repo (--api-key required)
 ```
 
 One AeroZoom-specific side-note:
