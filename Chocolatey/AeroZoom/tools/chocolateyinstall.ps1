@@ -16,14 +16,12 @@ $fileLocation = Join-Path $toolsDir 'Setup.exe'
 # Community Repo: Use official urls for non-redist binaries or redist where total package size is over 200MB
 # Internal/Organization: Download from internal location (internet sources are unreliable)
 $url        = 'https://github.com/wandersick/aerozoom-doc/releases/download/4.0.2/AeroZoom_v4.0.0.7_beta_2_silent_installer.exe' # download url, HTTPS preferred
-$url64      = '' # 64bit URL here (HTTPS preferred) or remove - if installer contains both (very rare), use $url
 
 $packageArgs = @{
   packageName   = 'AeroZoom'
   unzipLocation = $toolsDir
   fileType      = 'exe' #only one of these: exe, msi, msu
   url           = $url
-  url64bit      = $url64
   file          = $fileLocation
 
   softwareName  = 'AeroZoom*' #part or all of the Display Name as you see it in Programs and Features. It should be enough to be unique
@@ -34,8 +32,6 @@ $packageArgs = @{
   # e.g. checksum -t sha256 -f path\to\file
   checksum      = 'a587d1d5d934b34ef5cafdb58e22256d'
   checksumType  = 'md5' #default is md5, can also be sha1, sha256 or sha512
-  checksum64    = ''
-  checksumType64= 'sha256' #default is checksumType
 
   # MSI
   silentArgs    = "/programfiles /unattendaz=1" # ALLUSERS=1 DISABLEDESKTOPSHORTCUT=1 ADDDESKTOPICON=0 ADDSTARTMENU=0

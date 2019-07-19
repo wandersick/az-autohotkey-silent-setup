@@ -131,8 +131,6 @@ C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
         chocolateybeforemodify.ps1  # tasks added to run before [un]installation scripts below
         chocolateyinstall.ps1       # edited Chocolatey installation script (for use with 'choco install')
         chocolateyuninstall.ps1     # edited Chocolatey uninstallation script (for use with: 'choco uninstall')
-        LICENSE.txt
-        VERIFICATION.txt
 ```
 
 In addition, below are the commands used in case they are of any interest:
