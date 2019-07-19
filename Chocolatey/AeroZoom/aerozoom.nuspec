@@ -42,7 +42,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!-- <copyright>Year Software Vendor</copyright> -->
     <!-- If there is a license Url available, it is required for the community feed -->
     <licenseUrl>https://raw.github.com/wandersick/aerozoom-doc/master/LICENSE</licenseUrl>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>-->
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/wandersick/aerozoom</projectSourceUrl>
     <docsUrl>https://github.com/wandersick/aerozoom-doc</docsUrl>
     <mailingListUrl>https://feedburner.google.com/fb/a/mailverify?uri=wandersick</mailingListUrl>
@@ -71,7 +71,7 @@ Run AeroZoom.exe, and try:
 2. Reset zoom with [Left]+[Middle] buttons
 3. Bring up the AeroZoom panel by pressing [Left]+[Right], where more functions can be accessed
 
-... where [Left] can be substituted simply by clicking any other modifier, such as [Ctrl], on the AeroZoom Panel:
+... where [Left] can be substituted simply by clicking any other modifier, such as [Ctrl], on the AeroZoom Panel
  </description>
     <releaseNotes>https://wandersick.blogspot.com/p/aerozoom-for-windows-7-magnifier.html#releasenotes</releaseNotes>
     <!-- =============================== -->      
