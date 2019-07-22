@@ -64,7 +64,7 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 
 5. Package (compress) the above `C:\AeroZoom` application in a [7-Zip SFX (self-extracting archive)](https://www.wikihow.com/Use-7Zip-to-Create-Self-Extracting-excutables)
 
-   - If you acquired AeroZoom via official means, this step can be skipped as it already comes with an SFX `AeroZoom_v4.0.0.7_beta_2.exe` after extraction
+   - If you acquired AeroZoom via official means, this step can be skipped as it already comes with an SFX `AeroZoom_v4.0.0.7_beta_2.exe` after extraction. Simply rename it as `AeroZoom_7-Zip_SFX.exe`
 
 6. Put the SFX file there and rename it as `AeroZoom_7-Zip_SFX.exe`
 
@@ -107,14 +107,18 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 
 9. [Download and install AutoHotKey](https://autohotkey.com)
 
-10. Compile `AeroZoom_Unattended_Installer.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as so:
+10. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `AeroZoom_Unattended_Installer.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as so:
 
-    - `Ahk2Exe.exe /in "AeroZoom_Unattended_Installer.ahk" /icon "AeroZoom_Setup.ico"`
+    - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "AeroZoom_Unattended_Installer.ahk" /icon "AeroZoom_Setup.ico"`
       - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
     - Alternatively, to compile with the alternative compiler, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/), then right-click `AeroZoom_Unattended_Installer.ahk` and select _Compile with Options_ which would parse parameters from `AeroZoom_Unattended_Installer.ahk.ini`
       - While Compile_AHK II comes with compression feature, this post uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) in the case of AeroZoom which contains multiple similar executables
 
 11. Done. Now executing `AeroZoom_Unattended_Installer.exe` would silently trigger an extraction of 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and calls inner AeroZoom `Setup.exe` to install AeroZoom for all users with its unattended parameter `/programfiles /unattendAZ=1`
+
+### About False-Positive Notices from Anti-virus Software
+
+Like certain AutoHotkey applications, some anti-virus vendors may falsely identify the unattended installer created as undesirable. It is understandable considering the nature of this application is to perform installation and uninstallation in a silent way, which involves seemingly risky tasks such as modifying uninstallation keys in the registry. On the other hand, I found that compiling using Compile_AHK II and/or an icon helps lower the detection rates a little bit (from [12](https://www.virustotal.com/gui/file/e8cf2094a562a5b7010edecb8bdcb11f15ea95ab21bf3ce27e7e58426c3bcf6a/detection) down to [<10](https://www.virustotal.com/gui/file/015da23376e29da9e7501eaaf9c501fbfd3fce87e5604cd09fbe4cd191537c27/detection) out of 65 anti-virus applications on VirusTotal). Still, this false-positive detection issue may not be completely eliminated and can be safely ignored. It is recommended to [report your file to your anti-virus vendor as clean if possible](https://www.techsupportalert.com/content/how-report-malware-or-false-positives-multiple-antivirus-vendors.htm).
 
 ## Pushing Unattended Setup to Chocolatey
 
@@ -189,9 +193,9 @@ The remaining steps for building the Setup.exe would be:
 
 2. [Download and install AutoHotKey](https://autohotkey.com)
 
-3. Compile `Setup.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as so:
+3. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `Setup.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as follows:
 
-   - `Ahk2Exe.exe /in "Setup.ahk" /icon "AeroZoom_Setup.ico"`
+   - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "Setup.ahk" /icon "AeroZoom_Setup.ico"`
      - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
    - Alternatively, to compile with the alternative compiler, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/), then right-click `Setup.ahk` and select _Compile with Options_, which would parse parameters from `Setup.ahk.ini`
      - While Compile_AHK II comes with compression feature, this post uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) in the case of AeroZoom which contains multiple similar executables
