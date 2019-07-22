@@ -38,7 +38,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <authors>wandersick</authors>
     <!-- projectUrl is required for the community feed -->
     <projectUrl>https://wandersick.blogspot.com/p/aerozoom-for-windows-7-magnifier.html</projectUrl>
-    <iconUrl>https://raw.github.com/wandersick/aerozoom-doc/master/icons/aerozoom.png</iconUrl>
+    <iconUrl>https://cdn.statically.io/gh/wandersick/aerozoom-doc/master/icons/aerozoom.png</iconUrl>
     <!-- <copyright>Year Software Vendor</copyright> -->
     <!-- If there is a license Url available, it is required for the community feed -->
     <licenseUrl>https://raw.github.com/wandersick/aerozoom-doc/master/LICENSE</licenseUrl>
