@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop';
 $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 $fileLocation = Join-Path $toolsDir 'Setup.exe'
-$url        = 'https://github.com/wandersick/aerozoom-doc/releases/download/4.0.2/AeroZoom_v4.0.0.7_beta_2_silent_installer.exe'
+$url        = 'https://github.com/wandersick/aerozoom/releases/download/4.0.2/AeroZoom_v4.0.0.7_beta_2_silent_installer.exe'
 
 $packageArgs = @{
   packageName   = 'AeroZoom'
