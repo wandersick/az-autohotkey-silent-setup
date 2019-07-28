@@ -27,11 +27,15 @@ AeroZoom_Unattended_Installer.exe
 
 1. `AeroZoom_Unattended_Installer.exe` will be the outer unattended installer we will write in [AutoHotkey](https://autohotkey.com) (AHK) language, which contains 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and is responsible for extraction as well as calling an inner `Setup.exe` to install AeroZoom for all users silently
 
-2. The second-level `AeroZoom_7-Zip_SFX.exe` will be our [7-Zip](https://www.7-zip.org/) self-extracting archive (SFX). It contains the portable application files of AeroZoom and the inner `Setup.exe`. Use of a 7-Zip SFX automatically provides silent extraction parameters for the outer `AeroZoom_Unattended_Installer.exe` to leverage. The SFX will be zipped with the ultra compression option to effectively reduce the size of AeroZoom from 32MB to 2MB in the case of AeroZoom which contains multiple similar executables
+2. The second-level `AeroZoom_7-Zip_SFX.exe` will be our [7-Zip](https://www.7-zip.org/) self-extracting archive (SFX). It contains the portable application files of AeroZoom and the inner `Setup.exe`
+   - Use of a 7-Zip SFX automatically provides silent extraction parameters for the outer `AeroZoom_Unattended_Installer.exe` to leverage
+   - The SFX will be zipped with the ultra compression option to effectively reduce the size of AeroZoom from 32MB to 2MB in the case of AeroZoom which contains multiple similar executables
 
 3. The third-level `Setup.exe`, the inner setup, is the second AutoHotkey program we will write which provides silent installations parameters for the outer `AeroZoom_Unattended_Installer.exe` to leverage, as well as logic to determine several things such as whether AeroZoom has already been installed, which will be detailed in the last section
 
-After walking through how to create `AeroZoom_Unattended_Installer.exe` and `AeroZoom_7-Zip_SFX.exe`, we will take a detour to briefly go through how to push this unattended installer to the community repository of [Chocolatey](https://chocolatey.org), the package manager for Windows, before going back to detailing how to create the inner `Setup.exe`.
+After walking through how to create `AeroZoom_7-Zip_SFX.exe` and `AeroZoom_Unattended_Installer.exe` (goal #1), we will take a detour to go through how to push this unattended installer to the community repository of [Chocolatey](https://chocolatey.org) (goal #2), the package manager for Windows, before going back to detailing how to create the inner `Setup.exe` (goal #3).
+
+![Chocolatey - choco install aerozoom](images/chocolatey-choco-install-aerozoom.png)
 
 Let's go and create all those exe files above!
 
@@ -88,7 +92,7 @@ This first section walks through how to create the outer unattended installer, `
    │   Readme.txt
    │
    │   // if you manually build this Setup.exe, replace existing one
-   |   // otherwise, no action is required
+   │   // otherwise, no action is required
    │
    │   Setup.exe
    │
@@ -165,7 +169,7 @@ As shown below, the AutoHotkey source code of `AeroZoom_Unattended_Installer.exe
 
 9.  Done. Now executing `AeroZoom_Unattended_Installer.exe` would silently trigger an extraction of 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and calls the inner AeroZoom `Setup.exe` to install AeroZoom for all users with its unattended installation parameter `/programfiles /unattendAZ=1` (which will be further explained in the third and final section)
 
-The end result, `AeroZoom_Unattended_Installer.exe`, is available for [download here](https://github.com/wandersick/aerozoom/releases/tag/4.0.2) as `AeroZoom_v4.0.0.7_beta_2_silent_installer.exe`
+**Goal #1**: The end result, `AeroZoom_Unattended_Installer.exe`, is available for [download here](https://github.com/wandersick/aerozoom/releases/tag/4.0.2) as `AeroZoom_v4.0.0.7_beta_2_silent_installer.exe`
 
 ### About False-Positive Notices from Anti-virus Software
 
@@ -175,7 +179,7 @@ On the other hand, I found that compiling using Compile_AHK II and/or an icon he
 
 Still, this false-positive detection issue may not be completely eliminated and can be safely ignored. It is recommended to [report your file to your anti-virus vendor as clean if possible](https://www.techsupportalert.com/content/how-report-malware-or-false-positives-multiple-antivirus-vendors.htm).
 
-## 2. Pushing Unattended Setup to Chocolatey
+## 2. Pushing Unattended Installer to Chocolatey
 
 Thanks to this [Chocolatey how-to article by Coffmans](https://medium.com/@coffmans/my-own-chocolatey-package-for-dessert-f7721b7fe234) and [guidance from Chocolatey](https://chocolatey.org/docs/create-packages), I was able to figure out how to push the outer unattended installer to the [Chocolatey community repository here](https://chocolatey.org/packages/aerozoom).
 
@@ -244,7 +248,7 @@ C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
     $url = 'https://github.com/wandersick/aerozoom/releases/download/4.0.2/AeroZoom_v4.0.0.7_beta_2_silent_installer.exe'
     ```
 
-4. [chocolateyuninstall.ps1](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Chocolatey/AeroZoom/tools/chocolateyinstall.ps1) performs silent uninstallation by using a parameter specific to the application installer, which is `/programfiles /unattendAZ=1` in the case of AeroZoom. (The parameters will be further explained in the third and final section)
+4. [chocolateyuninstall.ps1](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Chocolatey/AeroZoom/tools/chocolateyuninstall.ps1) performs silent uninstallation by using a parameter specific to the application installer, which is `/programfiles /unattendAZ=1` in the case of AeroZoom. (The parameters will be further explained in the third and final section)
 
     ```ps1
     silentArgs    = "/programfiles /unattendAZ=1"
@@ -284,9 +288,62 @@ choco uninstall aerozoom
 choco push aerozoom.4.0.0.7.nupkg
 ```
 
+**Goal #2**: Having gone through the [moderation review process](https://chocolatey.org/faq#how-does-the-moderation-review-process-work), AeroZoom is available on [Chocolatey community repository](https://twitter.com/wandersick/status/1154727225268174848) now.
+
 ## 3. Step-by-Step: Building Inner Setup Using AutoHotkey
 
 This final section walks through how to create the inner `Setup.exe` acquired after 7-Zip extraction.
+
+The steps for building the `Setup.exe` would be:
+
+1. First, let's delete `Setup.exe` in the AeroZoom folder
+
+    If not already done so, the files below can be [downloaded here](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) and extracted to a desired directory, e.g. `C:\AeroZoom`
+
+    ```c
+    C:\AeroZoom
+    │   AeroZoom.exe
+    │   Readme.txt
+    │   ...
+    │
+    │   // Setup.exe will be built using below method here
+    │
+    └───Data
+    ```
+
+2. Acquire the source code of `Setup.exe`, i.e. [Setup.ahk](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk)
+
+    If not already done so, open Command Prompt, download or `git clone` [this repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
+
+    ```batch
+    cd /d c:
+    git clone https://github.com/wandersick/az-autohotkey-silent-setup.git
+    ```
+
+    So that the following folder structure is acquired
+
+    ```c
+    C:\az-autohotkey-silent-setup
+    │   Setup.ahk.ini
+    │   ...
+    │
+    │   // source code of Setup.exe of AeroZoom
+    │
+    └───Setup.ahk
+    ```
+
+3. If not already done so, [download and install AutoHotKey](https://autohotkey.com)
+
+4. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `Setup.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as follows:
+
+   - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "Setup.ahk" /icon "AeroZoom_Setup.ico"`
+     - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
+   - Alternatively, to compile with the alternative compiler, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/), then right-click `Setup.ahk` and select _Compile with Options_, which would parse parameters from [Setup.ahk.ini](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk.ini)
+     - While Compile_AHK II comes with compression feature, this post uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) for our case
+
+5. Done
+  
+**Goal #3**: The end result, `Setup.exe`, can be used to install and uninstall AeroZoom, provided that it is located in the below directory, and that suitable unattended installation parameters are passed (see `Setup.exe /?`), or the installation is performed in an normal attended way (i.e. double-clicking the `Setup.exe` and follow the on-screen installation instructions).
 
 ```c
 C:\AeroZoom
@@ -294,44 +351,18 @@ C:\AeroZoom
 │   Readme.txt
 │   ...
 │
-│   // place the Setup.exe built using below method here
-│
+│   // Place the newly created Setup.exe in this folder
+│   // It can install and uninstall AeroZoom here
 │   Setup.exe
 │
 └───Data
 ```
 
-- If not already done, the files above can be [downloaded here](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) and extracted to a desired directory, e.g. `C:\AeroZoom`
-
-The remaining steps for building the Setup.exe would be:
-
-(Some of the steps can be skipped if already performed)
-
-1. Acquire the source code of `Setup.exe`, i.e. [Setup.ahk](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk):
-
-   - Download or `git clone` [this repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
-
-   ```c
-   C:\az-autohotkey-silent-setup
-   │   ...
-   │
-   │   // source code of Setup.exe of AeroZoom
-   │
-   └───Setup.ahk
-   ```
-
-2. [Download and install AutoHotKey](https://autohotkey.com)
-
-3. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `Setup.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as follows:
-
-   - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "Setup.ahk" /icon "AeroZoom_Setup.ico"`
-     - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
-   - Alternatively, to compile with the alternative compiler, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/), then right-click `Setup.ahk` and select _Compile with Options_, which would parse parameters from [Setup.ahk.ini](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk.ini)
-     - While Compile_AHK II comes with compression feature, this post uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) for our case
+If you would like, you may also continue from step 3 of the first section to leverage this newly created `Setup.exe` to create the outer unattended installer again, which enables a totally silent installation experience of AeroZoom without the need to supply any parameters.
 
 ### How It Works
 
-Instead of using a popular approach such as Windows Installer, AeroZoom implements the installer `Setup.exe` from the ground up, which has its own parameters:
+Instead of using a popular approach such as Windows Installer, AeroZoom implements `Setup.exe` from the ground up, which has its own parameters:
 
 - `/programfiles` for installing into `C:\Program Files (x86)` (or `C:\Program Files` for 32-bit OS) instead of current user profile, i.e. `%localappdata%`, usually `C:\Users\{username}\AppData\Local`
 - `/unattendAZ=1` for an unattended installation
@@ -369,7 +400,7 @@ If %1% {
 }
 ```
 
-During installation or uninstallation, `Setup.exe` would first check a few prerequisites, such as whether files it depends on exist or not, as well as terminiating any executables that could be running.
+During installation or uninstallation, `Setup.exe` would first check a few prerequisites, such as whether files it depends on exist or not, as well as terminating any executables that could be running.
 
 Once it is OK to proceed with installation, `Setup.exe` would create shortcuts:
 
