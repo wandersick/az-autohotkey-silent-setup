@@ -4,8 +4,6 @@ Supposed there is a portable Windows application without an installer and uninst
 
 The application example, i.e. the application for which a setup is created is [AeroZoom](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778). While some terminologies are specific to AeroZoom, the general concepts should apply to other software.
 
-- `AeroZoom_Unattended_Installer.exe` will be the outer unattended installer we will create which contains 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and is responsible for extraction as well as calling an inner `Setup.exe` to install AeroZoom for all users silently
-
 ```c
 // ⭐1️⃣ to be built: outer unattended installer written in AHK
 
@@ -20,26 +18,39 @@ AeroZoom_Unattended_Installer.exe
           │      AeroZoom.exe
           │      ...
           │
-          │      // ⭐3️⃣ to be built: inner setup in AHK
+          │      // ⭐3️⃣ to be built: inner setup written in AHK
           │
           │      Setup.exe
           │
           └───Data
 ```
 
-After creating `AeroZoom_Unattended_Installer.exe`, we will take a detour to briefly go through how to push this unattended installer to the community repository of [Chocolatey](https://chocolatey.org), the package manager for Windows, before going back to detailing how to create the inner `Setup.exe`.
+1. `AeroZoom_Unattended_Installer.exe` will be the outer unattended installer we will write in [AutoHotkey](https://autohotkey.com) (AHK) language, which contains 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and is responsible for extraction as well as calling an inner `Setup.exe` to install AeroZoom for all users silently.
+
+2. The second-level `AeroZoom_7-Zip_SFX.exe` will be our [7-Zip](https://www.7-zip.org/) self-extracting archive (SFX). It contains the portable application files of AeroZoom and the inner `Setup.exe`. Use of a 7-Zip SFX automatically provides silent extraction parameters for the outer `AeroZoom_Unattended_Installer.exe` to leverage. The SFX will be zipped with the ultra compression option to effectively reduce the size of AeroZoom from 32MB to 2MB in the case of AeroZoom which contains multiple similar executables.
+
+3. The third-level `Setup.exe`, the inner setup, is the second AutoHotkey program we will write which provides silent installations parameters for the outer `AeroZoom_Unattended_Installer.exe` to leverage, as well as logic to determine several things such as whether AeroZoom has already been installed, which will be detailed in the last section.
+
+After walking through how to create `AeroZoom_Unattended_Installer.exe` and `AeroZoom_7-Zip_SFX.exe`, we will take a detour to briefly go through how to push this unattended installer to the community repository of [Chocolatey](https://chocolatey.org), the package manager for Windows, before going back to detailing how to create the inner `Setup.exe`.
 
 Let's go and create all those exe files above!
 
 ## Some Trivia of AeroZoom (before We Begin)
 
-> Scripted in AHK, [AeroZoom](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) enhances upon Windows Magnifier and optionally Sysinternals ZoomIt to enable screen magnification by mouse-wheeling, as well as turning any mouse into a Home-Theater PC/presentation mouse, where zooming and positioning becomes a breeze without a keyboard
+> Scripted in AHK, [AeroZoom](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) enhances upon Windows Magnifier and optionally Sysinternals ZoomIt to enable screen magnification by mouse-wheeling, as well as turning any mouse into a Home-Theater PC/presentation mouse, where zooming and positioning becomes a breeze without a keyboard.
 
-Originally, AeroZoom was built as a portable application. Its `Setup.exe` was introduced in a later version, `v2.0`, and the unattended setup `AeroZoom_Unattended_Installer.exe` was first built for `v4.0`, available for [download here](https://github.com/wandersick/aerozoom-doc/releases).
+Originally, AeroZoom was built as a portable application. Its `Setup.exe` was introduced in a later version, `v2.0`, and the unattended setup `AeroZoom_Unattended_Installer.exe`, the first outcome of this article, was introduced in `v4.0`.
 
 ## Step-by-Step Instructions
 
-1. Download or `git clone` [this repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
+1. In Command Prompt, download or [git](https://git-scm.com/downloads) clone [this repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
+
+   ```batch
+   cd /d c:
+   git clone https://github.com/wandersick/az-autohotkey-silent-setup.git
+   ```
+
+    So that the following folder structure is acquired
 
    ```c
    C:\az-autohotkey-silent-setup
@@ -60,32 +71,33 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
    C:\AeroZoom
    │   AeroZoom.exe
    │   Readme.txt
+   │   Setup.exe
    │
    └───Data
    ```
 
-3. Build an inner `Setup.exe` using AutoHotkey following [these instructions in the same article](#Building-and-Obtaining-Inner-Setupexe-using-AutoHotkey) or acquire it by extracting it from the [downloaded AeroZoom SFX file](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778)
+3. Build an inner `Setup.exe` using AutoHotkey following [these instructions in the final section](#Building-and-Obtaining-Inner-Setupexe-using-AutoHotkey) to learn the process, or leave it as is for now and learn how to build it later (recommended for now)
 
-4. Place the `Setup.exe` next to AeroZoom
+    - Ensure `Setup.exe` is next to AeroZoom
 
    ```c
    C:\AeroZoom
    │   AeroZoom.exe
    │   Readme.txt
-   │   ...
    │
-   │   // place the Setup.exe built here (replace existing one, if any)
+   │   // if you manually build this Setup.exe, replace existing one
+   |   // otherwise, no action is required
    │
    │   Setup.exe
    │
    └───Data
    ```
 
-5. Package (compress) the above `C:\AeroZoom` application in a [7-Zip SFX (self-extracting archive)](https://www.wikihow.com/Use-7Zip-to-Create-Self-Extracting-excutables)
+4. Package (compress) the above `C:\AeroZoom` application directory in a [7-Zip SFX (self-extracting archive)](https://www.wikihow.com/Use-7Zip-to-Create-Self-Extracting-excutables)
 
-   - If you acquired AeroZoom via official means, this step can be skipped as it already comes with an SFX `AeroZoom_v4.0.0.7_beta_2.exe` after extraction. Simply rename it as `AeroZoom_7-Zip_SFX.exe`
+   - Optionally, this step can be skipped by leveraging the AeroZoom download, which already comes with an SFX `AeroZoom_v4.0.0.7_beta_2.exe` after extraction
 
-6. Put the SFX file there and rename it as `AeroZoom_7-Zip_SFX.exe`
+   - Put the SFX file there and rename it as `AeroZoom_7-Zip_SFX.exe`
 
    ```c
    C:\az-autohotkey-silent-setup
@@ -99,7 +111,7 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
    └───AeroZoom_7-Zip_SFX.exe
    ```
 
-7. Place an icon named `AeroZoom_Setup.ico` there (optional)
+5. Place an icon named `AeroZoom_Setup.ico` there (optional)
 
    ```c
    C:\az-autohotkey-silent-setup
@@ -114,7 +126,7 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
    └───AeroZoom_Setup.ico
    ```
 
-8. Edit `AeroZoom_Unattended_Installer.ahk` and change below `C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe` to a desired location (no change if directory is the same as the example)
+6. Edit `AeroZoom_Unattended_Installer.ahk` and change below `C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe` to a desired location (no change if directory is the same as the example)
 
    ```ahk
    ; Package an application (e.g. AeroZoom) in 7-Zip SFX
@@ -129,24 +141,27 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
    RunWait, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe -o"%A_ScriptDir%" -y
 
    ; Run silent setup command: Setup.exe /programfiles /unattendaz=1
-   ; For AeroZoom, this command will install AeroZoom:
-   ; - silently (/unattendedaz=1) and to All Users (/programfiles)
+   ; For AeroZoom, thse parameters will perform installation:
+   ; - silently (/unattendedaz=1)
+   ; - to All Users (/programfiles)
    ; Or uninstall in case AeroZoom is found in the target folder
    ; (built into the logic of Setup.exe of AeroZoom)
 
    RunWait, %A_ScriptDir%\AeroZoom\Setup.exe /programfiles /unattendaz=1
    ```
 
-9. [Download and install AutoHotKey](https://autohotkey.com)
+7. [Download and install AutoHotKey](https://autohotkey.com)
 
-10. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `AeroZoom_Unattended_Installer.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as so:
+8. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `AeroZoom_Unattended_Installer.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as so:
 
     - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "AeroZoom_Unattended_Installer.ahk" /icon "AeroZoom_Setup.ico"`
       - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
     - Alternatively, to compile with the alternative compiler, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/), then right-click `AeroZoom_Unattended_Installer.ahk` and select _Compile with Options_ which would parse parameters from `AeroZoom_Unattended_Installer.ahk.ini`
-      - While Compile_AHK II comes with compression feature, this post uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) in the case of AeroZoom which contains multiple similar executables
+      - While Compile_AHK II comes with compression feature, this article uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) in our case
 
-11. Done. Now executing `AeroZoom_Unattended_Installer.exe` would silently trigger an extraction of 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and calls inner AeroZoom `Setup.exe` to install AeroZoom for all users with its unattended parameter `/programfiles /unattendAZ=1`
+9.  Done. Now executing `AeroZoom_Unattended_Installer.exe` would silently trigger an extraction of 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and calls the inner AeroZoom `Setup.exe` to install AeroZoom for all users with its unattended installation parameter `/programfiles /unattendAZ=1` (which will be further explained in the final section)
+
+The end result, `AeroZoom_Unattended_Installer.exe`, is available for [download here](https://github.com/wandersick/aerozoom/releases/tag/4.0.2) as `AeroZoom_v4.0.0.7_beta_2_silent_installer.exe`
 
 ### About False-Positive Notices from Anti-virus Software
 
@@ -174,7 +189,7 @@ C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
 │
 └───tools
 
-        # tasks added to run before [un]install scripts below
+        # tasks run before [un]install scripts
 
         chocolateybeforemodify.ps1
 
@@ -264,7 +279,7 @@ The remaining steps for building the Setup.exe would be:
    - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "Setup.ahk" /icon "AeroZoom_Setup.ico"`
      - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
    - Alternatively, to compile with the alternative compiler, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/), then right-click `Setup.ahk` and select _Compile with Options_, which would parse parameters from `Setup.ahk.ini`
-     - While Compile_AHK II comes with compression feature, this post uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) in the case of AeroZoom which contains multiple similar executables
+     - While Compile_AHK II comes with compression feature, this post uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) for our case.
 
 ### How It Works
 
