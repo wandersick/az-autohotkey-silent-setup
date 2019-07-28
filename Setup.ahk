@@ -37,9 +37,9 @@ IfNotExist, %A_WorkingDir%\Data
 
 targetDir=%localappdata%
 If %1% {
-	Loop, %0%  ; For each parameter:
+	Loop, %0%  ; For each parameter
 	{
-		param := %A_Index%  ; Fetch the contents of the variable whose name is contained in A_Index.
+		param := %A_Index%  ; Retrieve A_Index variable contents
 		If (param="/unattendAZ=1")
 			unattendAZ=1
 		Else if (param="/unattendAZ=2")
@@ -142,9 +142,9 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	
 	; ******************************************************************************************
 	
-	If setupAllUsers
+	If setupAllUsers ; if AeroZoom was installed for all users
 		RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, UninstallString, %targetDir%\wandersick\AeroZoom\setup.exe /unattendAZ=2 /programfiles
-	Else
+	Else ; if AeroZoom was installed for current user
 		RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, UninstallString, %targetDir%\wandersick\AeroZoom\setup.exe /unattendAZ=2
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, InstallLocation, %targetDir%\wandersick\AeroZoom
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, DisplayVersion, %verAZ%

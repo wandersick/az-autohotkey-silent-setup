@@ -7,13 +7,22 @@ The application example, i.e. the application for which a setup is created is [A
 - `AeroZoom_Unattended_Installer.exe` will be the outer unattended installer we will create which contains 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and is responsible for extraction as well as calling an inner `Setup.exe` to install AeroZoom for all users silently
 
 ```c
-AeroZoom_Unattended_Installer.exe // ⭐1️⃣ to be built (goal - outer unattended installer written in AHK)
+// ⭐1️⃣ to be built: outer unattended installer written in AHK
+
+AeroZoom_Unattended_Installer.exe
     │
-    └───AeroZoom_7-Zip_SFX.exe  // 2️⃣ to be built (self-extracting archive created by 7-Zip with ultra compression)
+    │   // 2️⃣ to be built: 7-Zip self-extracting archive
+    │
+    └───AeroZoom_7-Zip_SFX.exe
           │
-          ├───AeroZoom // portable application example
-          |      AeroZoom.exe
-          │      Setup.exe // ⭐3️⃣ to be built (goal - inner setup written in AHK)
+          ├───AeroZoom // portable app example
+          │
+          │      AeroZoom.exe
+          │      ...
+          │
+          │      // ⭐3️⃣ to be built: inner setup in AHK
+          │
+          │      Setup.exe
           │
           └───Data
 ```
@@ -34,9 +43,15 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 
    ```c
    C:\az-autohotkey-silent-setup
-   │   AeroZoom_Unattended_Installer.ahk      // AutoHotkey source code of the outer unattended installer to be customized
-   │   AeroZoom_Unattended_Installer.ahk.ini  // optional: for use with an alternative compiler, Compile_AHK II, discussed later
    │   ...
+   │
+   │   // AHK code of the outer unattended installer to be customized
+   │
+   │   AeroZoom_Unattended_Installer.ahk
+   │
+   │   // optional: for use with Compile_AHK II (alternative compiler)
+   │
+   └───AeroZoom_Unattended_Installer.ahk.ini
    ```
 
 2. Download [AeroZoom](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) and extract it to a desired directory, e.g. `C:\AeroZoom`
@@ -57,7 +72,11 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
    C:\AeroZoom
    │   AeroZoom.exe
    │   Readme.txt
-   │   Setup.exe   // place the Setup.exe built here (replace existing one, if any)
+   │   ...
+   │
+   │   // place the Setup.exe built here (replace existing one, if any)
+   │
+   │   Setup.exe
    │
    └───Data
    ```
@@ -70,38 +89,51 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 
    ```c
    C:\az-autohotkey-silent-setup
-   |   AeroZoom_7-Zip_SFX.exe                  // place SFX (containing C:\AeroZoom) built using 7-Zip here
    │   AeroZoom_Unattended_Installer.ahk
    │   AeroZoom_Unattended_Installer.ahk.ini
    │   README.md
-   |   ...
+   │   ...
+   │
+   │   // place SFX (containing C:\AeroZoom) built using 7-Zip here
+   │
+   └───AeroZoom_7-Zip_SFX.exe
    ```
 
 7. Place an icon named `AeroZoom_Setup.ico` there (optional)
 
    ```c
    C:\az-autohotkey-silent-setup
-   |   AeroZoom_7-Zip_SFX.exe
-   │   AeroZoom_Setup.ico                      // icon is optional
+   │   AeroZoom_7-Zip_SFX.exe
    │   AeroZoom_Unattended_Installer.ahk
    │   AeroZoom_Unattended_Installer.ahk.ini
    │   README.md
-   |   ...
+   │   ...
+   │
+   │   // optionally, place an icon here
+   │
+   └───AeroZoom_Setup.ico
    ```
 
 8. Edit `AeroZoom_Unattended_Installer.ahk` and change below `C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe` to a desired location (no change if directory is the same as the example)
 
    ```ahk
-   ; Package an application (e.g. AeroZoom) in 7-Zip SFX, self-extracting archive (FYI: the AeroZoom download already comes with an SFX)
-   ; Place it in the location specified below, e.g. C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe
+   ; Package an application (e.g. AeroZoom) in 7-Zip SFX
+   ; (FYI: the AeroZoom download already comes with an SFX)
+   ; Place it in the location specified below
+   ; e.g. C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe
+
    FileInstall, C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe, 1
 
-   ; Silently extract AeroZoom from the SFX file into the current directory
+   ; Silently extract AeroZoom from SFX into the current folder
+
    RunWait, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe -o"%A_ScriptDir%" -y
 
    ; Run silent setup command: Setup.exe /programfiles /unattendaz=1
-   ; For AeroZoom, this command will install AeroZoom to All Users (/programfiles) and silently (/unattendedaz=1)
-   ; as well as uninstalling in case an AeroZoom copy is found in the target location (built into the logic of Setup.exe of AeroZoom)
+   ; For AeroZoom, this command will install AeroZoom:
+   ; - silently (/unattendedaz=1) and to All Users (/programfiles)
+   ; Or uninstall in case AeroZoom is found in the target folder
+   ; (built into the logic of Setup.exe of AeroZoom)
+
    RunWait, %A_ScriptDir%\AeroZoom\Setup.exe /programfiles /unattendaz=1
    ```
 
@@ -118,7 +150,11 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 
 ### About False-Positive Notices from Anti-virus Software
 
-Like certain AutoHotkey applications, some anti-virus vendors may falsely identify the unattended installer created as undesirable. It is understandable considering the nature of this application is to perform installation and uninstallation in a silent way, which involves seemingly risky tasks such as modifying uninstallation keys in the registry. On the other hand, I found that compiling using Compile_AHK II and/or an icon helps lower the detection rates a little bit (from [12](https://www.virustotal.com/gui/file/e8cf2094a562a5b7010edecb8bdcb11f15ea95ab21bf3ce27e7e58426c3bcf6a/detection) down to [<10](https://www.virustotal.com/gui/file/015da23376e29da9e7501eaaf9c501fbfd3fce87e5604cd09fbe4cd191537c27/detection) out of 65 anti-virus applications on VirusTotal). Still, this false-positive detection issue may not be completely eliminated and can be safely ignored. It is recommended to [report your file to your anti-virus vendor as clean if possible](https://www.techsupportalert.com/content/how-report-malware-or-false-positives-multiple-antivirus-vendors.htm).
+Like certain AutoHotkey applications, some anti-virus vendors may falsely identify the unattended installer created as undesirable. It is understandable considering the nature of this application is to perform installation and uninstallation in a silent way, which involves seemingly risky tasks such as modifying uninstallation keys in the registry.
+
+On the other hand, I found that compiling using Compile_AHK II and/or an icon helps lower the detection rates a little bit (from [12](https://www.virustotal.com/gui/file/e8cf2094a562a5b7010edecb8bdcb11f15ea95ab21bf3ce27e7e58426c3bcf6a/detection) down to [<10](https://www.virustotal.com/gui/file/015da23376e29da9e7501eaaf9c501fbfd3fce87e5604cd09fbe4cd191537c27/detection) out of 65 anti-virus applications on VirusTotal).
+
+Still, this false-positive detection issue may not be completely eliminated and can be safely ignored. It is recommended to [report your file to your anti-virus vendor as clean if possible](https://www.techsupportalert.com/content/how-report-malware-or-false-positives-multiple-antivirus-vendors.htm).
 
 ## Pushing Unattended Setup to Chocolatey
 
@@ -128,30 +164,53 @@ The Chocolatey-related files customized for AeroZoom have been included in the [
 
 ```powershell
 C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
-│   aerozoom.nuspec                 # package metadata
 │   ReadMe.md
 │   _TODO.txt
+│   ...
+│
+│   # package metadata
+│
+│   aerozoom.nuspec
 │
 └───tools
-        chocolateybeforemodify.ps1  # tasks added to run before [un]installation scripts below
-        chocolateyinstall.ps1       # edited Chocolatey installation script (for use with 'choco install')
-        chocolateyuninstall.ps1     # edited Chocolatey uninstallation script (for use with: 'choco uninstall')
+
+        # tasks added to run before [un]install scripts below
+
+        chocolateybeforemodify.ps1
+
+        # edited Chocolatey install script
+        # (for use with 'choco install')
+
+        chocolateyinstall.ps1
+
+        # edited Chocolatey uninstall script
+        # (for use with: 'choco uninstall')
+
+        chocolateyuninstall.ps1
 ```
 
 In addition, below are the commands used in case they are of any interest:
 
 ```powershell
-choco pack                            # create .nupkg (aerozoom.4.0.0.7.nupkg)
+# create .nupkg (aerozoom.4.0.0.7.nupkg)
 
-choco install aerozoom.4.0.0.7.nupkg  # install aerozoom.4.0.0.7.nupkg by running
-                                      # - chocolateybeforemodify.ps1
-                                      # - chocolateyinstall.ps1
+choco pack
 
-choco uninstall aerozoom              # uninstall aerozoom by running
-                                      # - chocolateybeforemodify.ps1
-                                      # - chocolateyuninstall.ps1
+# install aerozoom.4.0.0.7.nupkg by running:
+# - chocolateybeforemodify.ps1
+# - chocolateyinstall.ps1
 
-choco push aerozoom.4.0.0.7.nupkg     # push to community repo (--api-key required)
+choco install aerozoom.4.0.0.7.nupkg
+
+# uninstall aerozoom by running:
+# - chocolateybeforemodify.ps1
+# - chocolateyuninstall.ps1
+
+choco uninstall aerozoom
+
+# push to community repo (--api-key required)
+
+choco push aerozoom.4.0.0.7.nupkg
 ```
 
 One AeroZoom-specific side-note:
@@ -170,7 +229,11 @@ Note: This section is about the inner `Setup.exe` acquired after 7-Zip extractio
 C:\AeroZoom
 │   AeroZoom.exe
 │   Readme.txt
-│   Setup.exe // place the Setup.exe built using below method here (replace existing one, if any)
+│   ...
+│
+│   // place the Setup.exe built using below method here
+│
+│   Setup.exe
 │
 └───Data
 ```
@@ -187,8 +250,11 @@ The remaining steps for building the Setup.exe would be:
 
    ```c
    C:\az-autohotkey-silent-setup
-   │   Setup.ahk // source code of Setup.exe of AeroZoom
-   |   ...
+   │   ...
+   │
+   │   // source code of Setup.exe of AeroZoom
+   │
+   └───Setup.ahk
    ```
 
 2. [Download and install AutoHotKey](https://autohotkey.com)
@@ -214,9 +280,14 @@ If it detects AeroZoom is already installed, the setup will perform an uninstall
 ```ahk
 targetDir=%localappdata%
 If %1% {
-  Loop, %0%  ; For each parameter:
+  
+  ; For each parameter
+
+  Loop, %0%
   {
-    param := %A_Index%  ; Fetch the contents of the variable whose name is contained in A_Index.
+    ; Retrieve A_Index variable contents
+
+    param := %A_Index%
     If (param="/unattendAZ=1")
       unattendAZ=1
     Else if (param="/unattendAZ=2")
@@ -243,12 +314,14 @@ Once it is OK to proceed with installation, `Setup.exe` would create shortcuts:
 IfExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 {
   ; Create shortcut to Start Menu (All Users)
+
   If setupAllUsers
   {
     FileCreateShortcut, %targetDir%\wandersick\AeroZoom\AeroZoom.exe, %A_ProgramsCommon%\AeroZoom.lnk, %targetDir%\wandersick\AeroZoom\,, AeroZoom`, the smooth wheel-zooming and snipping mouse-enhancing panel,,
     FileCreateShortcut, %targetDir%\wandersick\AeroZoom\AeroZoom.exe, %A_DesktopCommon%\AeroZoom.lnk, %targetDir%\wandersick\AeroZoom\,, AeroZoom`, the smooth wheel-zooming and snipping mouse-enhancing panel,,
   }
   ; Create shortcut to Start Menu (Current User)
+
   Else
   {
     FileCreateShortcut, %targetDir%\wandersick\AeroZoom\AeroZoom.exe, %A_Programs%\AeroZoom.lnk, %targetDir%\wandersick\AeroZoom\,, AeroZoom`, the smooth wheel-zooming and snipping mouse-enhancing panel,,
@@ -260,10 +333,18 @@ IfExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 Next, `Setup.exe` would write uninstallation information such as `UninstallString` to the Windows Registry:
 
 ```ahk
-If setupAllUsers ; if AeroZoom was installed for all users
+If setupAllUsers
+{
+  ; If AeroZoom was installed for all users
+  
   RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, UninstallString, %targetDir%\wandersick\AeroZoom\Setup.exe /unattendAZ=2 /programfiles
+}
 Else
+{
+  ; If AeroZoom was installed for current user
+
   RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, UninstallString, %targetDir%\wandersick\AeroZoom\Setup.exe /unattendAZ=2
+}
 ```
 
 Other information it writes there are:
@@ -283,7 +364,9 @@ Regarding uninstallation, it is simply the above process in reverse, i.e. deleti
 One thing worth mentioning is previous version of AeroZoom installer (`v4.0` and before) would leave `Setup.exe` under the installation directory. Since `v5.0`, this has been solved by calling a minimized `cmd.exe /c` to `ping localhost` followed by the self-destruction, in order for `Setup.exe` to delete itself.
 
 ```ahk
-; Remove directory content including Setup.exe that is currently running after 3 seconds using ping in a minimized Command Prompt
+; Remove directory content including Setup.exe that is running
+; after 3 seconds using ping in a minimized Command Prompt
+
 Run, cmd /c start /min ping 127.0.0.1 -n 3 >nul & rd /s /q "%targetDir%\wandersick"
 ```
 
