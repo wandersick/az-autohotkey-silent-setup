@@ -1,7 +1,4 @@
-﻿
-
-
-$ErrorActionPreference = 'Stop';
+﻿$ErrorActionPreference = 'Stop';
 $packageArgs = @{
   packageName   = 'AeroZoom'
   softwareName  = 'AeroZoom*'
@@ -32,5 +29,3 @@ if ($key.Count -eq 1) {
   Write-Warning "Please alert package maintainer the following keys were matched:"
   $key | % {Write-Warning "- $($_.DisplayName)"}
 }
-
-
