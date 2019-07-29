@@ -37,6 +37,14 @@ After walking through how to create `AeroZoom_7-Zip_SFX.exe` and `AeroZoom_Unatt
 
 ![Chocolatey - choco install aerozoom](images/chocolatey-choco-install-aerozoom.png)
 
+## Table of Content
+
+  - [1. Step-by-Step: Building Outer Unattended Installer Using AutoHotkey](#1-step-by-step-building-outer-unattended-installer-using-autohotkey) (Goal #1)
+    - [About False-Positive Notices from Anti-virus Software](#about-false-positive-notices-from-anti-virus-software)
+  - [2. Pushing Unattended Installer to Chocolatey](#2-pushing-unattended-installer-to-chocolatey) (Goal #2)
+  - [3. Step-by-Step: Building Inner Setup Using AutoHotkey](#3-step-by-step-building-inner-setup-using-autohotkey) (Goal #3)
+    - [How It Works](#how-it-works)
+
 Let's go and create all those exe files above!
 
 ## Some Trivia of AeroZoom (before We Begin)
@@ -169,7 +177,7 @@ As shown below, the AutoHotkey source code of `AeroZoom_Unattended_Installer.exe
 
 9.  Done. Now executing `AeroZoom_Unattended_Installer.exe` would silently trigger an extraction of 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and calls the inner AeroZoom `Setup.exe` to install AeroZoom for all users with its unattended installation parameter `/programfiles /unattendAZ=1` (which will be further explained in the third and final section)
 
-**Goal #1**: The end result, `AeroZoom_Unattended_Installer.exe`, is available for [download here](https://github.com/wandersick/aerozoom/releases/tag/4.0.2) as `AeroZoom_v4.0.0.7_beta_2_silent_installer.exe`
+**Goal #1**: The end result, `AeroZoom_Unattended_Installer.exe`, is available for [download here](https://github.com/wandersick/aerozoom/releases/tag/4.0.2) (as `AeroZoom_v4.0.0.7_beta_2_silent_installer.exe`).
 
 ### About False-Positive Notices from Anti-virus Software
 
@@ -214,7 +222,7 @@ C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
         chocolateyuninstall.ps1
 ```
 
-1. [aerozoom.nuspec](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Chocolatey/AeroZoom/aerozoom.nuspec) contains the below package metadata (click the hyperlink to see the AeroZoom example with comments):
+1. [aerozoom.nuspec](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Chocolatey/AeroZoom/aerozoom.nuspec) contains the below self-describing package metadata (click the hyperlink to see the AeroZoom example with comments)
    - id
    - version
    - packageSourceUrl
