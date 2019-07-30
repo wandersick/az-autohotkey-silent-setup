@@ -37,7 +37,7 @@ After walking through how to create `AeroZoom_7-Zip_SFX.exe` and `AeroZoom_Unatt
 
 ![Chocolatey - choco install aerozoom](images/chocolatey-choco-install-aerozoom.png)
 
-## Table of Content
+### Table of Content
 
   - [1. Step-by-Step: Building Outer Unattended Installer Using AutoHotkey](#1-step-by-step-building-outer-unattended-installer-using-autohotkey) (Goal #1)
     - [About False-Positive Notices from Anti-virus Software](#about-false-positive-notices-from-anti-virus-software)
@@ -47,7 +47,7 @@ After walking through how to create `AeroZoom_7-Zip_SFX.exe` and `AeroZoom_Unatt
 
 Let's go and create all those exe files above!
 
-## Some Trivia of AeroZoom (before We Begin)
+### Some Trivia of AeroZoom (before We Begin)
 
 > Scripted in AHK, [AeroZoom](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) enhances upon Windows Magnifier and optionally Sysinternals ZoomIt to enable screen magnification by mouse-wheeling, as well as turning any mouse into a Home-Theater PC/presentation mouse, where zooming and positioning becomes a breeze without a keyboard.
 
@@ -195,29 +195,29 @@ The Chocolatey-related files customized for AeroZoom have been included in the [
 
 Let's walk through the folder structure:
 
-```powershell
+```c
 C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
 │   ReadMe.md
 │   _TODO.txt
 │   ...
 │
-│   # 1. package metadata
+│   // 1️⃣ package metadata
 │
 │   aerozoom.nuspec
 │
 └───tools
 
-        # 2. tasks run before [un]install scripts
+        // 2️⃣ tasks run before [un]install scripts
 
         chocolateybeforemodify.ps1
 
-        # 3. edited Chocolatey install script
-        #    (for use with 'choco install')
+        // 3️⃣ edited Chocolatey install script
+        //    (for use with 'choco install')
 
         chocolateyinstall.ps1
 
-        # 4. edited Chocolatey uninstall script
-        #    (for use with: 'choco uninstall')
+        // 4️⃣ edited Chocolatey uninstall script
+        //    (for use with: 'choco uninstall')
 
         chocolateyuninstall.ps1
 ```
@@ -476,4 +476,4 @@ That's it.
 
 For simplicity, only the essential parts of `Setup.exe` are described above. Things that are specific to AeroZoom (e.g. removing scheduled tasks that AeroZoom may have created if specified by user) are not mentioned. For the rest, please refer to the comments in the [source code file](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk) `Setup.ahk` and the comments inside.
 
-Feel free to [leave a comment](https://wandersick.blogspot.com/2019/07/how-to-create-silent-installer-with.html) if there are any questions, or if you have any suggestions as well. Have a nice day!
+It would be my pleasure if you find this article informative. Welcome to [comment](https://wandersick.blogspot.com/2019/07/how-to-create-silent-installer-with.html) if you have any question or suggestion. Have a nice day!
