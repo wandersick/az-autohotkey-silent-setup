@@ -31,11 +31,15 @@ AeroZoom_Unattended_Installer.exe
    - Use of a 7-Zip SFX automatically provides silent extraction parameters for the outer `AeroZoom_Unattended_Installer.exe` to leverage
    - The SFX will be zipped with the ultra compression option to effectively reduce the size of AeroZoom from 32MB to 2MB in the case of AeroZoom which contains multiple similar executables
 
-3. The third-level `Setup.exe`, the inner setup, is the second AutoHotkey program we will write which provides silent installations parameters for the outer `AeroZoom_Unattended_Installer.exe` to leverage, as well as logic to determine several things such as whether AeroZoom has already been installed, which will be detailed in the last section
+3. The third-level `Setup.exe`, the inner setup, is the second AutoHotkey program we will write which provides installations parameters for the outer `AeroZoom_Unattended_Installer.exe` which can be leveraged e.g. by `choco install` command of Chocolatey, uninstallation parameters for `choco uninstall`, as well as logic to determine several things such as whether AeroZoom has already been installed, which will be detailed in the last section
 
 After walking through how to create `AeroZoom_7-Zip_SFX.exe` and `AeroZoom_Unattended_Installer.exe` (goal #1), we will take a detour to go through how to push this unattended installer to the community repository of [Chocolatey](https://chocolatey.org) (goal #2), the package manager for Windows, before going back to detailing how to create the inner `Setup.exe` (goal #3).
 
-![Chocolatey - choco install aerozoom](images/chocolatey-choco-install-aerozoom.png)
+![Installing AeroZoom via Chocolatey community repository (goal #2)](images/chocolatey-choco-install-aerozoom.png)
+
+This how-to will be centered around our code repository on GitHub:
+
+ - https://github.com/wandersick/az-autohotkey-silent-setup
 
 ### Table of Content
 
@@ -57,7 +61,7 @@ Originally, AeroZoom was built as a portable application. Its `Setup.exe` was in
 
 This first section walks through how to create the outer unattended installer, `AeroZoom_Unattended_Installer.exe`, written in AutoHotkey:
 
-1. In Command Prompt, download or [git](https://git-scm.com/downloads) clone [this repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
+1. In Command Prompt, download or [git](https://git-scm.com/downloads) clone [our code repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
 
    ```batch
    cd /d c:
@@ -191,7 +195,7 @@ Still, this false-positive detection issue may not be completely eliminated and 
 
 Thanks to this [Chocolatey how-to article by Coffmans](https://medium.com/@coffmans/my-own-chocolatey-package-for-dessert-f7721b7fe234) and [guidance from Chocolatey](https://chocolatey.org/docs/create-packages), I was able to figure out how to push the outer unattended installer to the [Chocolatey community repository here](https://chocolatey.org/packages/aerozoom).
 
-The Chocolatey-related files customized for AeroZoom have been included in the [git repository](https://github.com/wandersick/az-autohotkey-silent-setup) downloaded in step #1 of the above section.
+The Chocolatey package specification files customized for AeroZoom have been included in the [git repository](https://github.com/wandersick/az-autohotkey-silent-setup) downloaded in step #1 of the above section which was initially created with `choco new <package name>` command after Chocolatey has been [downloaded and installed](https://chocolatey.org/docs/installation) on a supported Windows machine.
 
 Let's walk through the folder structure:
 
@@ -242,7 +246,7 @@ C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
    - description
    - releaseNotes
 
-2. [chocolateybeforemodify.ps1](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Chocolatey/AeroZoom/tools/chocolateybeforemodify.ps1) performs pre-checks prior to installation and uninstallation. For example,  to prevent running processes from conflicting with setup, we can use PowerShell cmdlet `Stop-Process` to forcefully terminate processes
+2. [chocolateybeforemodify.ps1](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Chocolatey/AeroZoom/tools/chocolateybeforemodify.ps1) performs pre-checks prior to installation and uninstallation. For example, to prevent running processes from conflicting with setup, we can use PowerShell cmdlet `Stop-Process` to forcefully terminate processes
 
 - It is important to add `-ErrorAction SilentlyContinue` so that users do not see error texts when the command runs without any process to stop
 
@@ -250,7 +254,7 @@ C:\az-autohotkey-silent-setup\Chocolatey\AeroZoom
     Stop-Process -ProcessName aerozoom* -Force -ErrorAction SilentlyContinue
     ```
 
-3. [chocolateyinstall.ps1](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Chocolatey/AeroZoom/tools/chocolateyinstall.ps1) performs silent installation by downloading and using an unattended installer, which is the outcome from the first section of this article
+3. [chocolateyinstall.ps1](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Chocolatey/AeroZoom/tools/chocolateyinstall.ps1) performs silent installation by downloading and using an unattended installer, which is the outcome from the first section of this article. It should be hosted on a publicly accessible web server in order for this Chocolatey installation script to leverage
 
     ```ps1
     $url = 'https://github.com/wandersick/aerozoom/releases/download/4.0.2/AeroZoom_v4.0.0.7_beta_2_silent_installer.exe'
@@ -270,10 +274,10 @@ One AeroZoom-specific side-note:
   $packageArgs['file'] = "$($_.UninstallString)".Substring(0, $_.UninstallString.IndexOf(' /'))
   ```
 
-In addition, below are the commands for packaging, installing and uninstalling, as well as pushing to the Chocolatey community repository
+Once the PowerShell scripts have been edited, below are the commands for packaging, testing (installing and uninstalling), as well as pushing to the Chocolatey community repository
 
 ```powershell
-# create .nupkg (aerozoom.4.0.0.7.nupkg)
+# create NuGet package (aerozoom.4.0.0.7.nupkg)
 # ensure current directory is correct
 
 cd az-autohotkey-silent-setup\Chocolatey\AeroZoom
@@ -321,7 +325,7 @@ The steps for building the `Setup.exe` would be:
 
 2. Acquire the source code of `Setup.exe`, i.e. [Setup.ahk](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk)
 
-    If not already done so, open Command Prompt, download or `git clone` [this repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
+    If not already done so, open Command Prompt, download or `git clone` [our code repository](https://github.com/wandersick/az-autohotkey-silent-setup) to a desired directory e.g. `c:\az-autohotkey-silent-setup`
 
     ```batch
     cd /d c:
