@@ -2,7 +2,7 @@
 
 Supposed there is a portable Windows application without an installer and uninstaller, how to create them back? In today's post, we will explore one way to build a `Setup.exe` using AutoHotkey (AHK), with additional compression of 7-Zip applied to the `Setup.exe` and remaining files of the portable application for maximum compression, and then wrap it with an outer unattended installer, which is suitable for certain deployments.
 
-The application example, i.e. the application for which a setup is created is [AeroZoom](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778). While some terminologies are specific to AeroZoom, the general concepts should apply to other software.
+The application example, i.e. the application for which a setup is created is [AeroZoom](https://tech.wandersick.com/p/aerozoom-for-windows-7-magnifier.html). While some terminologies are specific to AeroZoom, the general concepts should apply to other software.
 
 ```c
 // ⭐1️⃣ to be built: outer unattended installer written in AHK
@@ -53,7 +53,7 @@ Let's go and create all those exe files above!
 
 ### Some Trivia of AeroZoom (before We Begin)
 
-> Scripted in AHK, [AeroZoom](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) enhances upon Windows Magnifier and optionally Sysinternals ZoomIt to enable screen magnification by mouse-wheeling, as well as turning any mouse into a Home-Theater PC/presentation mouse, where zooming and positioning becomes a breeze without a keyboard.
+> Scripted in AHK, [AeroZoom](https://tech.wandersick.com/p/aerozoom-for-windows-7-magnifier.html) enhances upon Windows Magnifier and optionally Sysinternals ZoomIt to enable screen magnification by mouse-wheeling, as well as turning any mouse into a Home-Theater PC/presentation mouse, where zooming and positioning becomes a breeze without a keyboard.
 
 Originally, AeroZoom was built as a portable application. Its `Setup.exe` was introduced in a later version, `v2.0`, and the unattended setup `AeroZoom_Unattended_Installer.exe`, the first outcome of this article, was introduced in `v4.0`.
 
@@ -83,7 +83,7 @@ This first section walks through how to create the outer unattended installer, `
    └───AeroZoom_Unattended_Installer.ahk.ini
    ```
 
-2. Download [AeroZoom](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) and extract it to a desired directory, e.g. `C:\AeroZoom`
+2. Download [AeroZoom](https://tech.wandersick.com/p/aerozoom-for-windows-7-magnifier.html) and extract it to a desired directory, e.g. `C:\AeroZoom`
 
    ```c
    C:\AeroZoom
@@ -310,7 +310,7 @@ The steps for building the `Setup.exe` would be:
 
 1. First, let's delete `Setup.exe` in the AeroZoom folder
 
-    If not already done so, the files below can be [downloaded here](https://gallery.technet.microsoft.com/AeroZoom-The-smooth-wheel-e0cdf778) and extracted to a desired directory, e.g. `C:\AeroZoom`
+    If not already done so, the files below can be [downloaded here](https://tech.wandersick.com/p/aerozoom-for-windows-7-magnifier.html) and extracted to a desired directory, e.g. `C:\AeroZoom`
 
     ```c
     C:\AeroZoom
