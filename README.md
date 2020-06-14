@@ -480,4 +480,4 @@ That's it.
 
 For simplicity, only the essential parts of `Setup.exe` are described above. Things that are specific to AeroZoom (e.g. removing scheduled tasks that AeroZoom may have created if specified by user) are not mentioned. For the rest, please refer to the comments in the [source code file](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk) `Setup.ahk` and the comments inside.
 
-It would be my pleasure if you find this article informative. Welcome to [comment](https://wandersick.blogspot.com/2019/07/how-to-create-silent-installer-with.html) if you have any question or suggestion. Have a nice day!
+It would be my pleasure if you find this article informative. Welcome to [comment](https://tech.wandersick.com/2019/07/how-to-create-silent-installer-with.html) if you have any question or suggestion. Have a nice day!

@@ -1,4 +1,4 @@
-; (c) Copyright 2009-2019 AeroZoom by wandersick | https://wandersick.blogspot.com
+; (c) Copyright 2009-2019 AeroZoom by wandersick | https://tech.wandersick.com
 
 ; Return Codes:
 ;
@@ -31,7 +31,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ; Missing component check
 IfNotExist, %A_WorkingDir%\Data
 {
-	Msgbox, 262192, AeroZoom, Missing essential components.`n`nPlease download the legitimate version from wandersick.blogspot.com.
+	Msgbox, 262192, AeroZoom, Missing essential components.`n`nPlease download the legitimate version from tech.wandersick.com.
 	ExitApp, 4
 }
 
@@ -137,8 +137,8 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, DisplayIcon, %targetDir%\wandersick\AeroZoom\AeroZoom.exe,0
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, DisplayName, AeroZoom %verAZ%
 	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, InstallDate, %A_YYYY%%A_MM%%A_DD%
-	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, HelpLink, https://wandersick.blogspot.com
-	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, URLInfoAbout, https://wandersick.blogspot.com
+	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, HelpLink, https://tech.wandersick.com
+	RegWrite, REG_SZ, HKEY_CURRENT_USER, %regKey%, URLInfoAbout, https://tech.wandersick.com
 	
 	; ******************************************************************************************
 	

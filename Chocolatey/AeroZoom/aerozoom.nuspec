@@ -37,7 +37,7 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <title>AeroZoom</title>
     <authors>wandersick</authors>
     <!-- projectUrl is required for the community feed -->
-    <projectUrl>https://wandersick.blogspot.com/p/aerozoom-for-windows-7-magnifier.html</projectUrl>
+    <projectUrl>https://tech.wandersick.com/p/aerozoom-for-windows-7-magnifier.html</projectUrl>
     <iconUrl>https://cdn.statically.io/gh/wandersick/aerozoom-doc/master/icons/aerozoom.png</iconUrl>
     <!-- <copyright>Year Software Vendor</copyright> -->
     <!-- If there is a license Url available, it is required for the community feed -->
@@ -73,7 +73,7 @@ Run AeroZoom.exe, and try:
 
 ... where [Left] can be substituted simply by clicking any other modifier, such as [Ctrl], on the AeroZoom Panel
  </description>
-    <releaseNotes>https://wandersick.blogspot.com/p/aerozoom-for-windows-7-magnifier.html#releasenotes</releaseNotes>
+    <releaseNotes>https://tech.wandersick.com/p/aerozoom-for-windows-7-magnifier.html#releasenotes</releaseNotes>
     <!-- =============================== -->      
 
     <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->
