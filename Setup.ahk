@@ -90,6 +90,24 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 		RegWrite, REG_SZ, HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AeroZoom.exe,, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	}
 
+	; For setting system-wide PATH environmental variable so that 'AeroZoom' can be run in Command Prompt or PowerShell
+	if setupAllUsers
+	{
+		EnvGet, envVarPath, Path
+		envVarPathNew = %envVarPath%;%targetDir%\wandersick\AeroZoom\
+		RegWrite, REG_SZ, HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment, Path, %envVarPathNew%
+		Sleep, 1000
+		; Broadcast WM_SETTINGCHANGE message for the updated PATH to take effect
+		EnvUpdate
+	} else {
+		EnvGet, envVarPath, Path
+		envVarPathNew = %envVarPath%;%targetDir%\wandersick\AeroZoom\
+		RegWrite, REG_SZ, HKEY_CURRENT_USER\Environment, Path, %envVarPathNew%
+		Sleep, 1000
+		; Broadcast WM_SETTINGCHANGE message for the updated PATH to take effect
+		EnvUpdate
+	}
+
 	IfExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	{
 		; Create shortcut to Start Menu (All Users)
@@ -279,6 +297,26 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	if A_IsAdmin
 	{
 		RegDelete, HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AeroZoom.exe
+	}
+
+	; For removing 'AeroZoom' from environmental variable including a semicolon
+	if setupAllUsers
+	{
+		targetDirToRemove=;%targetDir%\wandersick\AeroZoom\
+		EnvGet, envVarPath, Path
+		envVarPathNew := StrReplace(envVarPath, targetDirToRemove)
+		RegWrite, REG_SZ, HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment, Path, %envVarPathNew%
+		Sleep, 1000
+		; Broadcast WM_SETTINGCHANGE message for the updated PATH to take effect
+		EnvUpdate
+	} else {
+		targetDirToRemove=;%targetDir%\wandersick\AeroZoom\
+		EnvGet, envVarPath, Path
+		envVarPathNew := StrReplace(envVarPath, targetDirToRemove)
+		RegWrite, REG_SZ, HKEY_CURRENT_USER\Environment, Path, %envVarPathNew%
+		Sleep, 1000
+		; Broadcast WM_SETTINGCHANGE message for the updated PATH to take effect
+		EnvUpdate
 	}
 
 	;FileMove, %targetDir%\wandersick\AeroZoom\Data\uninstall.bat, %temp%, 1 ; prevent deletion of this as it will be used
