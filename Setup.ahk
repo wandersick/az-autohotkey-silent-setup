@@ -84,9 +84,10 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	FileCreateDir, %targetDir%\wandersick\AeroZoom
 	FileCopyDir, %A_WorkingDir%, %targetDir%\wandersick\AeroZoom, 1
 	; For running 'AeroZoom' in Run prompt
-	if A_IsAdmin
+	if A_IsAdmin ; unnecessary
 	{
-		RegWrite, REG_SZ, HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AeroZoom.exe,, %localappdata%\wandersick\AeroZoom\AeroZoom.exe
+		; Limitation: Run prompt does not have a current-user way, so both types of installation (current-user/all-users) would write to the same registry area
+		RegWrite, REG_SZ, HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AeroZoom.exe,, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 	}
 
 	IfExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
