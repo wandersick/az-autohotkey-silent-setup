@@ -301,14 +301,14 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 		RegDelete, HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\AeroZoom.exe
 	}
 
-	; For removing 'ChMac' from environmental variable including a semicolon
+	; For removing 'AeroZoom' from environmental variable including a semicolon
 	if setupAllUsers
 	{
-		targetDirToRemove1=;%targetDir%\wandersick\ChMac\
-		targetDirToRemove2=;%targetDir%\wandersick\ChMac
+		targetDirToRemove1=;%targetDir%\wandersick\AeroZoom\
+		targetDirToRemove2=;%targetDir%\wandersick\AeroZoom
 		; In case this is at the top of the PATH list
-		targetDirToRemove3=%targetDir%\wandersick\ChMac\;
-		targetDirToRemove4=%targetDir%\wandersick\ChMac;
+		targetDirToRemove3=%targetDir%\wandersick\AeroZoom\;
+		targetDirToRemove4=%targetDir%\wandersick\AeroZoom;
 		; EnvGet, envVarPath, Path
 		RegRead, envVarPath, HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment, Path
 		envVarPathNewTemp1 := StrReplace(envVarPath, targetDirToRemove1)
@@ -320,11 +320,11 @@ IfNotExist, %targetDir%\wandersick\AeroZoom\AeroZoom.exe
 		; Broadcast WM_SETTINGCHANGE message for the updated PATH to take effect
 		EnvUpdate
 	} else {
-		targetDirToRemove1=;%targetDir%\wandersick\ChMac\
-		targetDirToRemove2=;%targetDir%\wandersick\ChMac
+		targetDirToRemove1=;%targetDir%\wandersick\AeroZoom\
+		targetDirToRemove2=;%targetDir%\wandersick\AeroZoom
 		; In case this is at the top of the PATH list
-		targetDirToRemove3=%targetDir%\wandersick\ChMac\;
-		targetDirToRemove4=%targetDir%\wandersick\ChMac;
+		targetDirToRemove3=%targetDir%\wandersick\AeroZoom\;
+		targetDirToRemove4=%targetDir%\wandersick\AeroZoom;
 		; EnvGet, envVarPath, Path
 		RegRead, envVarPath, HKEY_CURRENT_USER\Environment, Path
 		envVarPathNewTemp1 := StrReplace(envVarPath, targetDirToRemove1)
