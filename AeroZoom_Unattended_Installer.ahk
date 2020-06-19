@@ -9,3 +9,8 @@ RunWait, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe -o"%A_ScriptDir%" -y
 ; For AeroZoom, this command will install AeroZoom to All Users (/programfiles) and silently (/unattendedaz=1)
 ; as well as uninstalling in case an AeroZoom copy is found in the target location (built into the logic of Setup.exe of AeroZoom)
 RunWait, %A_ScriptDir%\AeroZoom\Setup.exe /programfiles /unattendaz=1
+
+; Clean up temporary files used during setup shortly after setup finishes installation
+Sleep, 100
+FileDelete, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe
+FileDelete, %A_ScriptDir%\*AeroZoom*.*
