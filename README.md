@@ -170,7 +170,7 @@ As shown below, the AutoHotkey source code of `AeroZoom_Unattended_Installer.exe
    RunWait, %A_ScriptDir%\AeroZoom\Setup.exe /programfiles /unattendaz=1
    ```
 
-7. [Download and install AutoHotKey](https://autohotkey.com)
+7. [Download and install AutoHotKey](https://autohotkey.com) (specify 32-bit in the setup wizard to maximize compatibility of the compiled executables)
 
 8. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `AeroZoom_Unattended_Installer.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as so:
 
@@ -344,7 +344,7 @@ The steps for building the `Setup.exe` would be:
     └───Setup.ahk
     ```
 
-3. If not already done so, [download and install AutoHotKey](https://autohotkey.com)
+3. If not already done so, [download and install AutoHotKey](https://autohotkey.com) (specify 32-bit in the setup wizard to maximize compatibility of the compiled executables)
 
 4. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `Setup.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as follows:
 
