@@ -473,7 +473,7 @@ One thing worth mentioning is previous version of AeroZoom installer (`v4.0` and
 ; Remove directory content including Setup.exe that is running
 ; after 3 seconds using ping in a minimized Command Prompt
 
-Run, cmd /c start /min ping 127.0.0.1 -n 3 >nul & rd /s /q "%targetDir%\wandersick"
+Run, cmd /c start /min ping 127.0.0.1 -n 3 >nul & rd /s /q "%targetDir%\wandersick\AeroZoom"
 ```
 
 That's it.
