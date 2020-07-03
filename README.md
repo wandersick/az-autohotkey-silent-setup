@@ -1,6 +1,6 @@
 # How-to: Create a Silent Installer with AutoHotkey and Publish it on Chocolatey
 
-Supposed there is a portable Windows application without an installer and uninstaller, how to create them back? In today's post, we will explore one way to build a `Setup.exe` using AutoHotkey (AHK), with additional compression of 7-Zip applied to the `Setup.exe` and remaining files of the portable application for maximum compression, and then wrap it with an outer unattended installer, which is suitable for certain deployments.
+Supposed there is a portable Windows application without an installer and uninstaller, how to create them back? In today's post, we will explore one way to build a `Setup.exe` using AutoHotkey (AHK), with additional compression of 7-Zip applied to the `Setup.exe` and remaining files of the portable application for maximum compression, and then wrap it with an outer unattended installer, turning a portable application into an installable one while being suitable also for silent deployment.
 
 The application example, i.e. the application for which a setup is created is [AeroZoom](https://tech.wandersick.com/p/aerozoom-for-windows-7-magnifier.html). While some terminologies are specific to AeroZoom, the general concepts should apply to other software.
 
@@ -146,38 +146,46 @@ This first section walks through how to create the outer unattended installer, `
 
 6. Edit [AeroZoom_Unattended_Installer.ahk](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/AeroZoom_Unattended_Installer.ahk) and change below `C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe` to a desired location (no change if directory is the same as the example)
 
-As shown below, the AutoHotkey source code of `AeroZoom_Unattended_Installer.exe` is relatively simple. It only contains three lines (excluding comments):
+    As shown below, the AutoHotkey source code of `AeroZoom_Unattended_Installer.exe` is relatively simple. It only contains three lines (excluding comments):
 
-   ```ahk
-   ; Package an application (e.g. AeroZoom) in 7-Zip SFX
-   ; (FYI: the AeroZoom download already comes with an SFX)
-   ; Place it in the location specified below
-   ; e.g. C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe
+      ```ahk
+      ; Package an application (e.g. AeroZoom) in 7-Zip SFX
+      ; (FYI: the AeroZoom download already comes with an SFX)
+      ; Place it in the location specified below
+      ; e.g. C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe
 
-   FileInstall, C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe, 1
+      FileInstall, C:\az-autohotkey-silent-setup\AeroZoom_7-Zip_SFX.exe, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe, 1
 
-   ; Silently extract AeroZoom from SFX into the current folder
+      ; Silently extract AeroZoom from SFX into the current folder
 
-   RunWait, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe -o"%A_ScriptDir%" -y
+      RunWait, %A_ScriptDir%\AeroZoom_7-Zip_SFX.exe -o"%A_ScriptDir%" -y
 
-   ; Run silent setup command: Setup.exe /programfiles /unattendaz=1
-   ; For AeroZoom, thse parameters will perform installation:
-   ; - silently (/unattendedaz=1)
-   ; - to All Users (/programfiles)
-   ; Or uninstall in case AeroZoom is found in the target folder
-   ; (built into the logic of Setup.exe of AeroZoom)
+      ; Run silent setup command: Setup.exe /programfiles /unattendaz=1
+      ; For AeroZoom, thse parameters will perform installation:
+      ; - silently (/unattendedaz=1)
+      ; - to All Users (/programfiles)
+      ; Or uninstall in case AeroZoom is found in the target folder
+      ; (built into the logic of Setup.exe of AeroZoom)
 
-   RunWait, %A_ScriptDir%\AeroZoom\Setup.exe /programfiles /unattendaz=1
-   ```
+      RunWait, %A_ScriptDir%\AeroZoom\Setup.exe /programfiles /unattendaz=1
+      ```
 
 7. [Download and install AutoHotKey](https://autohotkey.com) (specify 32-bit in the setup wizard to maximize compatibility of the compiled executables)
 
-8. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `AeroZoom_Unattended_Installer.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as so:
+8. To compile the AutoHotkey script as an executable, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/).
 
-    - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "AeroZoom_Unattended_Installer.ahk" /icon "AeroZoom_Setup.ico"`
-      - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
-    - Alternatively, to compile with the alternative compiler, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/), then right-click `AeroZoom_Unattended_Installer.ahk` and select _Compile with Options_ which would parse parameters from [AeroZoom_Unattended_Installer.ahk.ini](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/AeroZoom_Unattended_Installer.ahk.ini)
-      - While Compile_AHK II comes with compression feature, this article uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) in our case
+   - While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), right-click `AeroZoom_Unattended_Installer.ahk` and select *Compile with Options* which would parse parameters from [AeroZoom_Unattended_Installer.ahk.ini](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/AeroZoom_Unattended_Installer.ahk.ini)
+   - The ini file has an option named `Execution_Level=4` which means `requireAdministrator` (run as administrator). This is required for the installer to carry out installation successfully.
+   - While Compile_AHK II comes with compression feature, this article uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) in our case.
+
+   Alternatively, the default compiler which comes with AutoHotkey can be used instead of Compile_AHK II if preferred.
+
+   - While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `AeroZoom_Unattended_Installer.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as so:
+   - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "AeroZoom_Unattended_Installer.ahk" /icon "AeroZoom_Setup.ico"`
+     - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
+   - For me, I prefer Compile_AHK II than the official compiler in our case where the installer requires “Run as Administrator” rights. Compile_AHK II has built in support of `Execution_Levels` while the official compiler has [other means to achieve it](https://stackoverflow.com/questions/43298908/how-to-add-administrator-privileges-to-autohotkey-script/43299069).
+
+   To each their own, choose a method with which you are comfortable. If you know of a better way, feel free to let me know!
 
 9.  Done. Now executing `AeroZoom_Unattended_Installer.exe` would silently trigger an extraction of 7-Zip SFX `AeroZoom_7-Zip_SFX.exe` and calls the inner AeroZoom `Setup.exe` to install AeroZoom for all users with its unattended installation parameter `/programfiles /unattendAZ=1` (which will be further explained in the third and final section)
 
@@ -346,12 +354,10 @@ The steps for building the `Setup.exe` would be:
 
 3. If not already done so, [download and install AutoHotKey](https://autohotkey.com) (specify 32-bit in the setup wizard to maximize compatibility of the compiled executables)
 
-4. While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), compile `Setup.ahk` using the bundled AHk2Exe utility, usually located under `C:\Program Files\AutoHotkey\Compiler` as follows:
+4. To compile the AutoHotkey script into an executable, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/).
 
-   - `"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in "Setup.ahk" /icon "AeroZoom_Setup.ico"`
-     - Icon parameter is optional: `/icon "AeroZoom_Setup.ico"`
-   - Alternatively, to compile with the alternative compiler, download and install [Compile_AHK II](https://www.autohotkey.com/board/topic/21189-compile-ahk-ii-for-those-who-compile/), then right-click `Setup.ahk` and select _Compile with Options_, which would parse parameters from [Setup.ahk.ini](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk.ini)
-     - While Compile_AHK II comes with compression feature, this post uses 7-Zip as 7-Zip reduces the file size much better (from 32MB to 2MB) for our case
+   - While under repository directory (e.g. `C:\az-autohotkey-silent-setup`), right-click `Setup.ahk` and select *Compile with Options*, which would parse parameters from [Setup.ahk.ini](https://github.com/wandersick/az-autohotkey-silent-setup/blob/master/Setup.ahk.ini)
+   - The ini file contains `Execution_Level=3` which means `highestAvailable` (run with highest privileges available) instead of `requireAdministrator` (run as administrator) as the `Setup.ahk` supports dynamically installing into current user profile (when no administrator rights are available) or installing into system directory e.g. `C:\Program Files (x86)` (when administrator rights are available and `Setup.exe /programfiles` is specified)
 
 5. Done
   
